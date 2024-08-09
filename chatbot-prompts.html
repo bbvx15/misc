@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Chatbot Prompts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      div {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        max-width: 100%;
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      textarea {
+        font-size: 1em;
+        width: 20em;
+        height: 10em;
+        max-width: 98%;
+        max-height: 50vh;
+      }
+
+      a {
+        display: inline-block;
+        width: 20em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <label for="chatbot">Chatbot</label>
+      <select id="chatbot">
+        <option selected>iAsk</option>
+        <option>Perplexity</option>
+        <option>You</option>
+        <option>Phind</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="prompt">Prompt</label>
+      <select id="prompt">
+        <option selected>Meaning & Examples</option>
+        <option>Pictures</option>
+        <option>Meaning & Pictures</option>
+        <option>Difference</option>
+        <option>Difference in US English</option>
+        <option>What Is</option>
+
+        <option>Word Explanation Thread</option>
+        <option>Sentence Explanation Thread</option>
+        <option>Writing Correction Thread</option>
+        <option>Translation (JP -> EN) Thread</option>
+        <option>Translation (EN -> JP) Thread</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="input">Input</label>
+      <br />
+      <textarea id="input"></textarea>
+    </div>
+
+    <div>
+      <a id="url" target="_blank"></a>
+    </div>
+
+    <script>
+      "use strict";
+
+      const chatbotElem = document.getElementById("chatbot");
+      const promptElem = document.getElementById("prompt");
+      const inputElem = document.getElementById("input");
+      const urlElem = document.getElementById("url");
+
+      update();
+
+      inputElem.addEventListener("keydown", function (e) {
+        if (e.ctrlKey && e.key === "Enter") {
+          update();
+          window.open(urlElem.href, "_blank").focus();
+        }
+      });
+
+      function update() {
+        let urlPrefix = "https://www.perplexity.ai/?q=";
+        switch (chatbotElem.value) {
+          case "iAsk":
+            urlPrefix = "https://iask.ai/?q=";
+            break;
+          case "You":
+            urlPrefix = "https://you.com/search?tbm=youchat&q=";
+            break;
+          case "Phind":
+            urlPrefix = "https://www.phind.com/search?q=";
+            break;
+        }
+
+        const input = inputElem.value.trim();
+
+        let q = `"${input}" meaning in American English, 7 example sentences in American English, synonyms, and antonyms`;
+        switch (promptElem.value) {
+          case "Pictures":
+            q = `"${input}" pictures`;
+            break;
+          case "Meaning & Pictures":
+            q = `"${input}" meaning in American English and pictures`;
+            break;
+          case "Difference":
+            q = `"${input}" difference`;
+            break;
+          case "Difference in US English":
+            q = `"${input}" difference in American English`;
+            break;
+          case "What Is":
+            q = `What is "${input}"`;
+            break;
+
+          case "Word Explanation Thread":
+            q = `Please provide clear explanations, including at least seven example sentences in American English, along with one-line synonyms and antonyms for each word or phrase that I provide in this thread. The explanations should be written in plain language, and please avoid using circular references in your explanations, synonyms, and antonyms. Please also explain the connotation of the words or phrases. I would prefer if your explanations follow this format:
+
+Explanation:
+
+Example Sentences:
+
+Synonyms: (one-line, lowercase, no periods)
+Antonyms: (one-line, lowercase, no periods)
+
+Connotation:`;
+            break;
+          case "Sentence Explanation Thread":
+            q =
+              "In this thread, I will provide you with English sentences that I did not understand. Please explain them in detail, paying particular attention to complex grammatical structures and advanced vocabulary that may be challenging for English learners.";
+            break;
+          case "Writing Correction Thread":
+            q = `Please correct any grammatical errors in the sentences I provide in this thread and provide explanations for the corrections. My sentences are written in American English, and I would appreciate your corrections to be in American English as well. Please suggest several alternative or better ways to express the same ideas, even if there are no corrections, and if there are any corrections, please show the corrected sentences in their entirety. I would prefer if your explanations follow this format:
+
+Corrected Version of Your Sentence:
+
+Explanation:
+
+Alternative Ways to Express the Same Idea:`;
+            break;
+          case "Translation (JP -> EN) Thread":
+            q = "In this thread, I will give you sentences in Japanese. I want you to translate them into English.";
+            break;
+          case "Translation (EN -> JP) Thread":
+            q = "In this thread, I will give you sentences in English. I want you to translate them into Japanese.";
+            break;
+        }
+
+        const url = urlPrefix + encodeURIComponent(q);
+
+        urlElem.href = url;
+        urlElem.innerText = q;
+      }
+
+      setInterval(update, 500);
+    </script>
+  </body>
+</html>

@@ -38,6 +38,8 @@
         <option>Perplexity</option>
         <option>You</option>
         <option>Phind</option>
+        <option>MS Copilot</option>
+        <option>ChatGPT</option>
       </select>
     </div>
 
@@ -97,6 +99,12 @@
             break;
           case "Phind":
             urlPrefix = "https://www.phind.com/search?q=";
+            break;
+          case "MS Copilot":
+            urlPrefix = "https://copilot.microsoft.com/?q=";
+            break;
+          case "ChatGPT":
+            urlPrefix = "https://chat.openai.com/?q=";
             break;
         }
 

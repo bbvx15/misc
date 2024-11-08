@@ -34,12 +34,14 @@
     <div>
       <label for="chatbot">Chatbot</label>
       <select id="chatbot">
-        <option selected>iAsk</option>
-        <option>Perplexity</option>
+        <option selected>Perplexity</option>
+        <option>ChatGPT</option>
+        <option>MS Copilot</option>
         <option>You</option>
         <option>Phind</option>
-        <option>MS Copilot</option>
-        <option>ChatGPT</option>
+        <option>Felo</option>
+        <option>iAsk</option>
+        <option>Genspark</option>
       </select>
     </div>
 
@@ -105,6 +107,12 @@
             break;
           case "ChatGPT":
             urlPrefix = "https://chat.openai.com/?q=";
+            break;
+          case "Felo":
+            urlPrefix = "https://felo.ai/search/?q=";
+            break;
+          case "Genspark":
+            urlPrefix = "https://www.genspark.ai/search?query=";
             break;
         }
 

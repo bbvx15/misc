@@ -60,6 +60,8 @@
         <option>Writing Correction Thread</option>
         <option>Translation (JP -> EN) Thread</option>
         <option>Translation (EN -> JP) Thread</option>
+        <option>Code Review Thread</option>
+        <option>Code Explanation Thread</option>
       </select>
     </div>
 
@@ -166,6 +168,14 @@ Alternative Ways to Express the Same Idea:`;
             break;
           case "Translation (EN -> JP) Thread":
             q = "In this thread, I will give you sentences in English. I want you to translate them into Japanese.";
+            break;
+          case "Code Review Thread":
+            q =
+              "In this thread, I will provide some programming code for each query. I would appreciate it if you could review and refactor my code.";
+            break;
+          case "Code Explanation Thread":
+            q =
+              "In this thread, I will provide some programming code that I do not understand well. Please explain it in detail, clarifying any intermediate or advanced concepts or functions that may be challenging for beginners. Additionally, if there are any potential mistakes, typos, etc., please let me know, as it will help me learn.";
             break;
         }
 

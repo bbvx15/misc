@@ -120,7 +120,7 @@
 
         const input = inputElem.value.trim();
 
-        let q = `"${input}" meaning in American English, 7 example sentences in American English, synonyms, and antonyms`;
+        let q = `Please explain the meaning of "${input}" in American English, and provide 7 or more example sentences in American English. After that, please show synonyms, antonyms, and its connotation.`;
         switch (promptElem.value) {
           case "Pictures":
             q = `"${input}" pictures`;
@@ -139,7 +139,7 @@
             break;
 
           case "Word Explanation Thread":
-            q = `Please provide clear explanations, including at least seven example sentences in American English, along with one-line synonyms and antonyms for each word or phrase that I provide in this thread. The explanations should be written in plain language, and please avoid using circular references in your explanations, synonyms, and antonyms. Please also explain the connotation of the words or phrases. I would prefer if your explanations follow this format:
+            q = `Please provide clear explanations, including at least seven example sentences in American English, along with one-line synonyms and antonyms for each word or phrase that I provide in this thread. The explanations should be written in plain language, and please avoid using circular references in your explanations, synonyms, and antonyms. Additionally, please explain the connotation of the words or phrases. I would prefer that your explanations follow this format:
 
 Explanation:
 
@@ -155,7 +155,7 @@ Connotation:`;
               "In this thread, I will provide English sentences that I do not understand. Please explain them in detail by clarifying the meaning of each sentence, explaining any intermediate or advanced vocabulary or phrases, rewriting each sentence in simpler terms, and paying close attention to complex grammatical structures that may be challenging for English learners. Additionally, if there are any potential grammar mistakes, typos, etc., please let me know, as I sometimes struggle to understand due to those inaccuracies, but please do not nitpick too much; just point out the obvious issues.";
             break;
           case "Writing Correction Thread":
-            q = `Please correct any grammatical errors in the sentences I provide in this thread and provide explanations for the corrections. My sentences are written in American English, and I would appreciate your corrections to be in American English as well. Please suggest several alternative or better ways to express the same ideas, even if there are no corrections, and if there are any corrections, please show the corrected sentences in their entirety. I would prefer if your explanations follow this format:
+            q = `Please correct any grammatical errors in the sentences I provide in this thread and provide explanations for the corrections. My sentences are written in American English, and I would appreciate your corrections being in American English as well. Additionally, please suggest several alternative or better ways to express the same ideas. Regardless of whether corrections are needed, please show the corrected sentences in their entirety. I would prefer that your explanations follow this format:
 
 Corrected Version of Your Sentence:
 

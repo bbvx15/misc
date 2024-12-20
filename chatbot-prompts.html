@@ -120,7 +120,7 @@
 
         const input = inputElem.value.trim();
 
-        let q = `Please explain the meaning of "${input}" in American English, and provide 7 or more example sentences in American English. After that, please show synonyms, antonyms, and its connotation.`;
+        let q = `Please explain the meaning of "${input}" in American English, and provide 7 or more example sentences in American English. After that, please show synonyms, antonyms, and its connotation, including any positive, negative, or neutral implications, as well as any level of formality or cultural context.`;
         switch (promptElem.value) {
           case "Pictures":
             q = `"${input}" pictures`;
@@ -139,7 +139,7 @@
             break;
 
           case "Word Explanation Thread":
-            q = `Please provide clear explanations, including at least seven example sentences in American English, along with one-line synonyms and antonyms for each word or phrase that I provide in this thread. The explanations should be written in plain language, and please avoid using circular references in your explanations, synonyms, and antonyms. Additionally, please explain the connotation of the words or phrases. I would prefer that your explanations follow this format:
+            q = `Please provide clear explanations, including at least seven example sentences in American English, along with one-line synonyms and antonyms for each word or phrase I provide in this thread. The explanations should be written in plain American English, and please avoid using circular references in your explanations, synonyms, and antonyms. Additionally, please explain the connotation of the words or phrases, including any positive, negative, or neutral implications, as well as any level of formality or cultural context. I would prefer that your explanations follow this format:
 
 Explanation:
 

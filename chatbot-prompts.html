@@ -58,6 +58,7 @@
         <option>What Is</option>
 
         <option>Word Explanation Thread</option>
+        <option>Word Explanation Thread 2</option>
         <option>Sentence Explanation Thread</option>
         <option>Writing Correction Thread</option>
         <option>Translation (JP -> EN) Thread</option>
@@ -112,6 +113,33 @@
 
 **Synonyms:** (one-line, lowercase, no periods)
 **Antonyms:** (one-line, lowercase, no periods)
+
+**Connotation:**`,
+          "Word Explanation Thread 2": `In this thread, I would like you to explain each word or phrase I provide. Please include meanings, pronunciations, example sentences, synonyms and antonyms, origins, and connotations. Please note the following:
+
+- Show the part of speech with the meaning.
+- If the word or phrase has more than one meaning (e.g., book), include them all except for extremely obscure ones, and order them according to how frequently they are used. Even if the input appears to be a particular part of speech (e.g., "to zap" is a verb), ignore that (e.g., include the meanings of "zap" not only as a verb).
+- Provide all possible pronunciations for all meanings.
+- For each meaning, create five example sentences. Chatbots tend to create very similar sentences (e.g., every sentence starts with "The"), which is boring, so I would like you to generate varied examples that sound as natural as possible.
+- You can use different forms of the provided word or phrase in the example sentences (e.g., change tense, make plural), but don't change the part of speech of the word or phrase (e.g., noun -> verb, adverb -> adjective). For instance, avoid "happy -> happily" or "noncommittally -> noncommittal."
+- List synonyms and antonyms for each meaning on one line each, comma-separated, using lowercase and no periods. Highlight particularly closely related synonyms and antonyms by bolding them.
+- If possible, provide the origin of the word or phrase to help me understand better.
+- Explain the connotation of the word or phrase, including any positive, negative, or neutral implications, as well as any level of formality or cultural context.
+- Avoid using circular references in your explanation, synonyms, and antonyms.
+- All content should be in American English, including pronunciations. If a word or phrase is rarely used in American English, or uses non-American spelling, note that accordingly.
+
+I would prefer that the output for each meaning follow this format:
+
+**Meaning:**
+
+**Pronunciation:**
+
+**Example Sentences:**
+
+**Synonyms:**
+**Antonyms:**
+
+**Origin:**
 
 **Connotation:**`,
           "Sentence Explanation Thread": `In this thread, I will provide English sentences that I do not understand. Please explain them in detail by clarifying the meaning of each sentence, explaining any intermediate or advanced vocabulary or phrases, rewriting each sentence in simpler terms, and paying close attention to complex grammatical structures that may be challenging for English learners. For vocabulary, please use a table and include the part of speech, meaning, and an example sentence. In the table, please show each word or phrase in its simplest form (e.g., "came up with an idea" -> "come up with sth," "she got roped into this" -> "rope sb into sth"). Please extract just one word if it makes sense in isolation (e.g., "decided what to do" -> "decide"). If it doesn’t make sense, please extract the essential part that works as a base form (e.g., "came up with an idea" -> "come up with sth"; "come up" or "come" don't make sense in this case) and make it as short as possible. Please avoid using circular references for meaning. Also, please show the simpler terms version in its entirety. Additionally, if there are any potential grammar mistakes or typos, please let me know, as I sometimes struggle to understand due to those inaccuracies. However, please do not nitpick too much; just point out the obvious issues.

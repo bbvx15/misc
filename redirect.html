@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirect</title>
+    <script>
+      (function () {
+        const redirectMap = {
+          "sh-p": "https://tinyurl.com/4r8jux2e",
+          "sh-ms": "https://tinyurl.com/3zzdu5fa",
+          "sh-c": "https://tinyurl.com/3rv82j4e",
+          "sh-g": "https://tinyurl.com/yu7ejwsy",
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+          const params = new URLSearchParams(window.location.search);
+          const id = params.get("id");
+          const messageElement = document.getElementById("message");
+
+          if (id && redirectMap[id]) {
+            window.location.replace(redirectMap[id]);
+          } else {
+            messageElement.textContent = "No matching destination found.";
+          }
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    <p id="message">Redirecting...</p>
+  </body>
+</html>

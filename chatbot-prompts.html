@@ -80,7 +80,7 @@
     </div>
 
     <div>
-      <a id="url" target="_blank"></a>
+      <a id="url" target="_blank" rel="noreferrer"></a>
     </div>
 
     <script>
@@ -205,7 +205,7 @@ Please provide the full text of all sentences rewritten in simpler terms, as wel
         inputElem.addEventListener("keydown", function (e) {
           if (e.ctrlKey && e.key === "Enter") {
             update();
-            window.open(urlElem.href, "_blank").focus();
+            window.open(urlElem.href, "_blank", "noreferrer").focus();
           }
         });
 

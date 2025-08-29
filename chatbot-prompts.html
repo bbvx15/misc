@@ -55,8 +55,9 @@
       <label for="prompt">Prompt</label>
       <select id="prompt">
         <option selected>Meaning & Examples</option>
-        <option>Pictures</option>
-        <option>Meaning & Pictures</option>
+        <option>Meaning & Examples 2</option>
+        <option>Images</option>
+        <option>Meaning & Images</option>
         <option>Difference</option>
         <option>Difference in US English</option>
         <option>What Is</option>
@@ -69,6 +70,9 @@
         <option>Translation (EN -> JP) Thread</option>
         <option>Code Review Thread</option>
         <option>Code Explanation Thread</option>
+        <option>Shell Explanation Thread</option>
+        <option>Shell‑Alt Explanation Thread</option>
+        <option>Terms Explanation Thread</option>
       </select>
     </div>
 
@@ -104,9 +108,10 @@
         });
 
         const PROMPTS = Object.freeze({
-          "Meaning & Examples": `Please explain the meaning of "{input}" in American English and provide seven or more example sentences in American English. If possible, please also provide its origin to help me understand better. After that, please show synonyms, antonyms, and its connotation, including any positive, negative, or neutral implications, as well as any level of formality or cultural context. Please highlight particularly closely related synonyms and antonyms among those you provide by bolding them.`,
-          Pictures: `"{input}" pictures`,
-          "Meaning & Pictures": `"{input}" meaning in American English and pictures`,
+          "Meaning & Examples": `Please explain the meaning of "{input}" in American English, its pronunciation in American English, and provide seven or more example sentences in American English. If possible, please also provide its origin to help me understand better. After that, please show synonyms, antonyms, and its connotation, including any positive, negative, or neutral implications, as well as any level of formality or cultural context. Please highlight particularly closely related synonyms and antonyms among those you provide by bolding them.`,
+          "Meaning & Examples 2": `Please explain the meaning of "{input}" in American English, including its pronunciation in American English. Include all meanings except for extremely obscure ones, and order them according to how frequently they are used. Even if it appears to be a particular part of speech, ignore that and include the meanings for all possible parts of speech. Provide all possible pronunciations for all meanings. For each meaning, create three example sentences in American English. If possible, please also provide its origin to help me understand better. After that, please show synonyms, antonyms, and its connotation, including any positive, negative, or neutral implications, as well as any level of formality or cultural context. Please highlight particularly closely related synonyms and antonyms among those you provide by bolding them.`,
+          Images: `"{input}" images`,
+          "Meaning & Images": `"{input}" meaning in American English and images`,
           Difference: `"{input}" difference`,
           "Difference in US English": `"{input}" difference in American English`,
           "What Is": `What is "{input}"`,
@@ -186,6 +191,25 @@ Please provide the full text of all sentences rewritten in simpler terms, as wel
             "In this thread, I will provide some programming code for each query. I would appreciate it if you could review and refactor my code.",
           "Code Explanation Thread":
             "In this thread, I will provide some programming code that I do not understand well. Please explain it in detail, clarifying any intermediate or advanced concepts or functions that may be challenging for beginners. Additionally, if there are any potential mistakes, typos, etc., please let me know, as it will help me learn.",
+          "Shell Explanation Thread": `I've recently started learning shell, and I'd like to master shell scripting, one-liners, and other useful techniques so that I can use it effectively at work. In this thread, I'll provide shell commands or topics that I think I need to learn at some point. For each one, please provide a comprehensive explanation (like "just read this and you'll be fine") that covers:
+
+1. Core functionality and purpose
+2. Most commonly used options with clear descriptions
+3. At least five examples progressing from basic to advanced, each with expected output
+4. Common use cases and best practices
+5. Potential pitfalls or gotchas to avoid
+
+For all features and examples:
+- Mark any non-POSIX features with [Non-POSIX]
+- Specify the shell name for shell-specific features (e.g., [bash], [zsh], [ksh], [fish], etc.)
+
+Include three to five exercises of mixed difficulty and the answers at the end.
+
+Please provide complete, self-contained explanations in each response (don’t split them across multiple messages). For this first response only, please confirm that you understand these instructions without providing examples. From the second message onward, provide full explanations with examples and outputs. Please reply in Japanese.`,
+          "Shell‑Alt Explanation Thread":
+            "I've recently started learning shell, and I'd like to master shell scripting, one-liners, and other useful techniques so that I can use it effectively at work. In this thread, I will give you some shell commands, and I would like you to generate as many alternative approaches as possible for each one so that I can broaden my knowledge. Please explain what the original command does at the beginning of your response. If the original command contains bad practices, please point those out. Please refer to ShellCheck if necessary. If a feature that is not POSIX-standard appears in your response, please indicate that with [Non-POSIX]. If the feature is specific to a certain shell, please provide the names of those shells (e.g., [bash], [zsh], [ksh], [fish], etc.). Please reply in Japanese.",
+          "Terms Explanation Thread":
+            "In this thread, I will provide some terms that I don't understand well or that I often confuse with one another. Please explain them precisely and thoroughly, using comparisons if necessary. Please reply in Japanese.",
         });
 
         const chatbotElem = document.getElementById("chatbot");

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <!-- Google tag (gtag.js) -->
@@ -152,10 +152,10 @@
 
 - Show the part of speech with the meaning.
 - If the word or phrase has more than one meaning (e.g., book), include them all except for extremely obscure ones, and order them according to how frequently they are used. Even if the input appears to be a particular part of speech (e.g., "to zap" is a verb), ignore that (e.g., include the meanings of "zap" not only as a verb).
-- Provide all possible pronunciations for all meanings.
+- Provide all possible pronunciations for all meanings in BOTH IPA and respelling format (e.g., /bʊk/ BOOK). Always include both notations together.
 - For each meaning, create five example sentences. Chatbots tend to create very similar sentences (e.g., every sentence starts with "The"), which is boring, so I would like you to generate varied examples that sound as natural as possible.
 - You can use different forms of the provided word or phrase in the example sentences (e.g., change tense, make plural), but don't change the part of speech of the word or phrase (e.g., noun -> verb, adverb -> adjective). For instance, avoid "happy -> happily" or "noncommittally -> noncommittal."
-- List synonyms and antonyms for each meaning on one line each, comma-separated, using lowercase and no periods. Highlight particularly closely related synonyms and antonyms by bolding them.
+- List synonyms and antonyms for each meaning, comma-separated, using lowercase and no periods. Highlight particularly closely related synonyms and antonyms by bolding them. **Synonyms and antonyms must be on separate lines.**
 - If possible, provide the origin of the word or phrase to help me understand better.
 - Explain the connotation of the word or phrase, including any positive, negative, or neutral implications, as well as any level of formality or cultural context.
 - Avoid using circular references in your explanation, synonyms, and antonyms.
@@ -170,6 +170,7 @@ I would prefer that the output for each meaning follow this format:
 **Example Sentences:**
 
 **Synonyms:**
+
 **Antonyms:**
 
 **Origin:**

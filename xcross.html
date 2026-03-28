@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>XCross Trainer</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --panel-2: #f0f3f9;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #d7deea;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --accent-text: #ffffff;
+        --subtle-button: #e8eefc;
+        --subtle-button-hover: #dbe7ff;
+        --success: #16a34a;
+        --success-bg: #dcfce7;
+        --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --radius-sm: 10px;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0b1020;
+          --panel: #121a2d;
+          --panel-2: #0f1728;
+          --text: #e5e7eb;
+          --muted: #9aa4b2;
+          --border: #243045;
+          --accent: #60a5fa;
+          --accent-hover: #3b82f6;
+          --accent-text: #08111f;
+          --subtle-button: #182338;
+          --subtle-button-hover: #22304b;
+          --success: #4ade80;
+          --success-bg: #14352a;
+          --shadow: 0 12px 34px rgba(0, 0, 0, 0.32);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: radial-gradient(circle at top, rgba(37, 99, 235, 0.12), transparent 35%), var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        width: min(960px, 100%);
+        margin: 0 auto;
+        padding: 20px 16px 40px;
+      }
+
+      .hero {
+        margin-bottom: 16px;
+      }
+
+      .hero-title {
+        margin: 0;
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        line-height: 1.2;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .badge-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 0 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        color: var(--muted);
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      /* ---- Jump Input ---- */
+      .jump-form {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .jump-form label {
+        font-size: 0.85rem;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .jump-input {
+        width: 58px;
+        height: 32px;
+        padding: 0 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--panel-2);
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        text-align: center;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+
+      .jump-input:focus {
+        border-color: var(--accent);
+      }
+
+      /* hide number spinner */
+      .jump-input::-webkit-inner-spin-button,
+      .jump-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .jump-input {
+        -moz-appearance: textfield;
+      }
+
+      .section-title {
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      }
+
+      .scramble-wrapper {
+        position: relative;
+      }
+
+      .scramble-box {
+        min-height: 120px;
+        padding: 16px;
+        padding-right: 48px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        font-family: var(--mono);
+        font-size: clamp(1.02rem, 2vw, 1.28rem);
+        line-height: 1.9;
+        word-break: break-word;
+        white-space: normal;
+      }
+
+      .scramble-box.empty {
+        color: var(--muted);
+        font-family: var(--sans);
+        line-height: 1.7;
+        padding-right: 16px;
+      }
+
+      /* ---- Copy Button ---- */
+      .copy-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s;
+      }
+
+      .copy-button:hover {
+        background: var(--subtle-button-hover);
+        color: var(--text);
+      }
+
+      .copy-button.copied {
+        color: var(--success);
+        border-color: var(--success);
+      }
+
+      .copy-button svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        margin-bottom: 10px;
+      }
+
+      button,
+      .link-button {
+        appearance: none;
+        border: none;
+        border-radius: 999px;
+        padding: 12px 16px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          transform 0.08s ease,
+          background-color 0.18s ease,
+          opacity 0.18s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+      }
+
+      button:active,
+      .link-button:active {
+        transform: translateY(1px);
+      }
+
+      .primary-button {
+        background: var(--accent);
+        color: var(--accent-text);
+      }
+
+      .primary-button:hover {
+        background: var(--accent-hover);
+      }
+
+      .secondary-button,
+      .link-button {
+        background: var(--subtle-button);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .secondary-button:hover,
+      .link-button:hover {
+        background: var(--subtle-button-hover);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .answer-section {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+      }
+
+      .answer-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
+      .answer-title {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      .answer-meta {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .solution-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      .solution-item {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--panel-2);
+        padding: 14px;
+      }
+
+      .solution-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+
+      .solution-index {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      .solution-moves {
+        font-family: var(--mono);
+        font-size: 1rem;
+        line-height: 1.9;
+        word-break: break-word;
+      }
+
+      .solution-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      /* ---- Keyboard Hint ---- */
+      .kbd-hint {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .kbd-hint span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      kbd {
+        display: inline-block;
+        padding: 2px 7px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        background: var(--panel-2);
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        line-height: 1.4;
+      }
+
+      /* hide kbd hint on touch devices */
+      @media (hover: none) {
+        .kbd-hint {
+          display: none;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .container {
+          padding: 14px 12px 28px;
+        }
+
+        .card {
+          padding: 14px;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        button,
+        .link-button {
+          width: 100%;
+        }
+
+        .scramble-box {
+          min-height: 140px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="hero">
+        <h1 class="hero-title">XCross Trainer</h1>
+      </header>
+
+      <main class="card">
+        <div class="top-row">
+          <div class="badge-row">
+            <div class="badge" id="countBadge">0 problems</div>
+            <div class="badge" id="statusBadge">No problem</div>
+          </div>
+          <div class="jump-form">
+            <label for="jumpInput">Go to #</label>
+            <input id="jumpInput" class="jump-input" type="number" min="1" inputmode="numeric" placeholder="—" />
+          </div>
+        </div>
+
+        <section aria-labelledby="scramble-heading">
+          <h2 id="scramble-heading" class="section-title">SCRAMBLE</h2>
+          <div class="scramble-wrapper">
+            <div id="scrambleBox" class="scramble-box empty">Press "Random" to get a scramble.</div>
+            <button id="copyButton" class="copy-button" type="button" title="Copy scramble" hidden>
+              <!-- clipboard icon -->
+              <svg id="copyIconDefault" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <!-- check icon (shown after copy) -->
+              <svg id="copyIconCheck" viewBox="0 0 24 24" hidden>
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button id="drawButton" class="primary-button" type="button">Random</button>
+          <button id="toggleAnswerButton" class="secondary-button" type="button" disabled>Show Answer</button>
+        </div>
+
+        <div class="kbd-hint">
+          <span><kbd>Enter</kbd> Random</span>
+          <span><kbd>Space</kbd> Toggle Answer</span>
+        </div>
+
+        <section id="answerSection" class="answer-section" hidden aria-labelledby="answer-heading">
+          <div class="answer-header">
+            <h2 id="answer-heading" class="answer-title">Solutions</h2>
+            <div id="answerMeta" class="answer-meta"></div>
+          </div>
+          <ul id="solutionList" class="solution-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // ↓↓↓ SCRAMBLE_DATA_START ↓↓↓
+      const scrambleData = [
+        {
+          scramble: "R2 B' D' U' F' U D' B' L2 U' D' F' U' B D2 F' D'",
+          solutions: [
+            {
+              moves: "3: F2 D L2 F D2 [FL]",
+              url: "https://alg.cubing.net/?setup=x-_R2_B-_D-_U-_F-_U_D-_B-_L2_U-_D-_F-_U-_B_D2_F-_D-&alg=F2_D_L2_F_D2",
+            },
+          ],
+        },
+        {
+          scramble: "U2 D R' F2 L2 B' U2 R' U2 D' B U2 D B2 R' F",
+          solutions: [
+            {
+              moves: "3: D2 B' R D' R' [FR]",
+              url: "https://alg.cubing.net/?setup=x-_U2_D_R-_F2_L2_B-_U2_R-_U2_D-_B_U2_D_B2_R-_F&alg=D2_B-_R_D-_R-",
+            },
+          ],
+        },
+        {
+          scramble: "U2 F U F R' F' R2 D2 L' F2 D2 U2 L2 F B2 L2 F2",
+          solutions: [
+            {
+              moves: "3: R' L2 F R2 L2 [BR]",
+              url: "https://alg.cubing.net/?setup=x-_U2_F_U_F_R-_F-_R2_D2_L-_F2_D2_U2_L2_F_B2_L2_F2&alg=R-_L2_F_R2_L2",
+            },
+          ],
+        },
+        {
+          scramble: "U' B' R B' R2 U' B2 D B' F2 R U2 B F2 D' R2 B'",
+          solutions: [
+            {
+              moves: "4: L' F' L2 B2 D [FL]",
+              url: "https://alg.cubing.net/?setup=x-_U-_B-_R_B-_R2_U-_B2_D_B-_F2_R_U2_B_F2_D-_R2_B-&alg=L-_F-_L2_B2_D",
+            },
+            {
+              moves: "3: L B2 D2 B' D' [FL]",
+              url: "https://alg.cubing.net/?setup=x-_U-_B-_R_B-_R2_U-_B2_D_B-_F2_R_U2_B_F2_D-_R2_B-&alg=L_B2_D2_B-_D-",
+            },
+          ],
+        },
+        {
+          scramble: "B U2 D' R' F2 U B2 D2 L2 U' B2 R2 D2 L' U' L' U2 F2",
+          solutions: [
+            {
+              moves: "3: R B2 U2 B R' [FR]",
+              url: "https://alg.cubing.net/?setup=x-_B_U2_D-_R-_F2_U_B2_D2_L2_U-_B2_R2_D2_L-_U-_L-_U2_F2&alg=R_B2_U2_B_R-",
+            },
+            {
+              moves: "3: R B2 U2 R' B [FR]",
+              url: "https://alg.cubing.net/?setup=x-_B_U2_D-_R-_F2_U_B2_D2_L2_U-_B2_R2_D2_L-_U-_L-_U2_F2&alg=R_B2_U2_R-_B",
+            },
+          ],
+        },
+        {
+          scramble: "B U2 F B2 R2 B' U' D' F2 U B' L F D2 L2 D' B2 D'",
+          solutions: [
+            {
+              moves: "3: R2 B' L B2 L' [BL]",
+              url: "https://alg.cubing.net/?setup=x-_B_U2_F_B2_R2_B-_U-_D-_F2_U_B-_L_F_D2_L2_D-_B2_D-&alg=R2_B-_L_B2_L-",
+            },
+          ],
+        },
+        {
+          scramble: "F2 L' D' L2 F2 R2 B' F L B' R L' F2 L R2 B' R2 U2",
+          solutions: [
+            {
+              moves: "3: D' B2 L' B D' [BR]",
+              url: "https://alg.cubing.net/?setup=x-_F2_L-_D-_L2_F2_R2_B-_F_L_B-_R_L-_F2_L_R2_B-_R2_U2&alg=D-_B2_L-_B_D-",
+            },
+          ],
+        },
+        {
+          scramble: "B2 U2 F2 B2 L' B R2 D2 L F2 D2 R2 L2 F2 R D2",
+          solutions: [
+            {
+              moves: "3: R F2 D2 F2 R2 [FL]",
+              url: "https://alg.cubing.net/?setup=x-_B2_U2_F2_B2_L-_B_R2_D2_L_F2_D2_R2_L2_F2_R_D2&alg=R_F2_D2_F2_R2",
+            },
+          ],
+        },
+        {
+          scramble: "D2 F' R' F D U' L D' B2 L2 U L' D F' U' B' R2 L'",
+          solutions: [
+            {
+              moves: "3: F2 D L' D2 F' [FR]",
+              url: "https://alg.cubing.net/?setup=x-_D2_F-_R-_F_D_U-_L_D-_B2_L2_U_L-_D_F-_U-_B-_R2_L-&alg=F2_D_L-_D2_F-",
+            },
+          ],
+        },
+        {
+          scramble: "L2 R2 D U2 F' L2 F2 L2 D' R2 D R D' U2 F U' D' B2 L",
+          solutions: [
+            {
+              moves: "3: D F B D2 B' [FL]",
+              url: "https://alg.cubing.net/?setup=x-_L2_R2_D_U2_F-_L2_F2_L2_D-_R2_D_R_D-_U2_F_U-_D-_B2_L&alg=D_F_B_D2_B-",
+            },
+          ],
+        },
+        {
+          scramble: "R U D2 R2 U2 L F' L B D2 L' B' R L' D R'",
+          solutions: [
+            {
+              moves: "3: U' D F D2 F' [BL]",
+              url: "https://alg.cubing.net/?setup=x-_R_U_D2_R2_U2_L_F-_L_B_D2_L-_B-_R_L-_D_R-&alg=U-_D_F_D2_F-",
+            },
+          ],
+        },
+        {
+          scramble: "F B' R2 L2 F D' B' U2 R' F U2 R2 B' U L2 B2 R2 F'",
+          solutions: [
+            {
+              moves: "3: D B2 R' D2 R' [FR]",
+              url: "https://alg.cubing.net/?setup=x-_F_B-_R2_L2_F_D-_B-_U2_R-_F_U2_R2_B-_U_L2_B2_R2_F-&alg=D_B2_R-_D2_R-",
+            },
+          ],
+        },
+        {
+          scramble: "F' B' U2 B L2 U2 D F2 U' B2 L2 B' L2 B2 F' D",
+          solutions: [
+            {
+              moves: "3: D L2 F' D F [BR]",
+              url: "https://alg.cubing.net/?setup=x-_F-_B-_U2_B_L2_U2_D_F2_U-_B2_L2_B-_L2_B2_F-_D&alg=D_L2_F-_D_F",
+            },
+            {
+              moves: "2: D' B D B' D2 [BR]",
+              url: "https://alg.cubing.net/?setup=x-_F-_B-_U2_B_L2_U2_D_F2_U-_B2_L2_B-_L2_B2_F-_D&alg=D-_B_D_B-_D2",
+            },
+          ],
+        },
+        {
+          scramble: "L B' D B' L' D' U2 B U2 D' F D2 U B2 L2 D",
+          solutions: [
+            {
+              moves: "3: R' L D R' D [BR]",
+              url: "https://alg.cubing.net/?setup=x-_L_B-_D_B-_L-_D-_U2_B_U2_D-_F_D2_U_B2_L2_D&alg=R-_L_D_R-_D",
+            },
+          ],
+        },
+        {
+          scramble: "L' B2 D B L F' L2 U B2 R2 D U L2 R' U L2 F' R'",
+          solutions: [
+            {
+              moves: "4: U' D2 B D' L2 [BL]",
+              url: "https://alg.cubing.net/?setup=x-_L-_B2_D_B_L_F-_L2_U_B2_R2_D_U_L2_R-_U_L2_F-_R-&alg=U-_D2_B_D-_L2",
+            },
+            {
+              moves: "3: F' B2 D2 B' D' [BL]",
+              url: "https://alg.cubing.net/?setup=x-_L-_B2_D_B_L_F-_L2_U_B2_R2_D_U_L2_R-_U_L2_F-_R-&alg=F-_B2_D2_B-_D-",
+            },
+          ],
+        },
+        {
+          scramble: "D' R2 D2 L' B L' B' U F2 U2 D B' R' D U B2 R",
+          solutions: [
+            {
+              moves: "3: D2 L' D' F' L [FR]",
+              url: "https://alg.cubing.net/?setup=x-_D-_R2_D2_L-_B_L-_B-_U_F2_U2_D_B-_R-_D_U_B2_R&alg=D2_L-_D-_F-_L",
+            },
+          ],
+        },
+        {
+          scramble: "L2 D2 F' D2 F2 D' F R2 F B D' R' D U2 F' B2 U F2 R2",
+          solutions: [
+            {
+              moves: "3: D B' D' L' D' [BL]",
+              url: "https://alg.cubing.net/?setup=x-_L2_D2_F-_D2_F2_D-_F_R2_F_B_D-_R-_D_U2_F-_B2_U_F2_R2&alg=D_B-_D-_L-_D-",
+            },
+          ],
+        },
+        {
+          scramble: "F' B' U B2 U' L2 B U' B U2 L D2 L F2 R2 F2 L'",
+          solutions: [
+            {
+              moves: "3: D B2 D F B2 [FL]",
+              url: "https://alg.cubing.net/?setup=x-_F-_B-_U_B2_U-_L2_B_U-_B_U2_L_D2_L_F2_R2_F2_L-&alg=D_B2_D_F_B2",
+            },
+          ],
+        },
+        {
+          scramble: "L2 B2 D' F' B' U F2 R L U' R F L' U2 D2 R' F' L'",
+          solutions: [
+            {
+              moves: "3: D R U D' R' [FR]",
+              url: "https://alg.cubing.net/?setup=x-_L2_B2_D-_F-_B-_U_F2_R_L_U-_R_F_L-_U2_D2_R-_F-_L-&alg=D_R_U_D-_R-",
+            },
+          ],
+        },
+        {
+          scramble: "L2 R' B2 D2 B F' U' L2 U' F L2 B2 D2 L B R' L'",
+          solutions: [
+            {
+              moves: "3: F2 D2 L2 F' L' [BR]",
+              url: "https://alg.cubing.net/?setup=x-_L2_R-_B2_D2_B_F-_U-_L2_U-_F_L2_B2_D2_L_B_R-_L-&alg=F2_D2_L2_F-_L-",
+            },
+          ],
+        },
+      ];
+      // ↑↑↑ SCRAMBLE_DATA_END ↑↑↑
+
+      (() => {
+        const data = normalizeData(scrambleData);
+
+        const state = {
+          currentIndex: -1,
+          answerVisible: false,
+        };
+
+        const el = {
+          countBadge: document.getElementById("countBadge"),
+          statusBadge: document.getElementById("statusBadge"),
+          scrambleBox: document.getElementById("scrambleBox"),
+          copyButton: document.getElementById("copyButton"),
+          copyIconDefault: document.getElementById("copyIconDefault"),
+          copyIconCheck: document.getElementById("copyIconCheck"),
+          drawButton: document.getElementById("drawButton"),
+          toggleAnswerButton: document.getElementById("toggleAnswerButton"),
+          answerSection: document.getElementById("answerSection"),
+          answerMeta: document.getElementById("answerMeta"),
+          solutionList: document.getElementById("solutionList"),
+          jumpInput: document.getElementById("jumpInput"),
+        };
+
+        // ---- helpers ----
+
+        function normalizeData(source) {
+          if (!Array.isArray(source)) return [];
+          return source
+            .filter((e) => e && typeof e.scramble === "string" && Array.isArray(e.solutions))
+            .map((e) => ({
+              scramble: e.scramble.trim(),
+              solutions: e.solutions
+                .filter((s) => s && typeof s.moves === "string" && typeof s.url === "string")
+                .map((s) => ({ moves: s.moves.trim(), url: s.url.trim() })),
+            }))
+            .filter((e) => e.scramble && e.solutions.length > 0);
+        }
+
+        /** Extract the leading number from moves string like "3: R' L D R' D [BR]" */
+        function faceCount(movesStr) {
+          const m = movesStr.match(/^(\d+):/);
+          return m ? parseInt(m[1], 10) : Infinity;
+        }
+
+        function sortSolutions(solutions) {
+          return [...solutions].sort((a, b) => faceCount(a.moves) - faceCount(b.moves));
+        }
+
+        function pickRandomIndex() {
+          if (data.length === 0) return -1;
+          if (data.length === 1) return 0;
+          let next = state.currentIndex;
+          while (next === state.currentIndex) {
+            next = Math.floor(Math.random() * data.length);
+          }
+          return next;
+        }
+
+        // ---- copy ----
+
+        let copyTimeout = null;
+
+        function copyScramble() {
+          if (state.currentIndex < 0) return;
+          const text = data[state.currentIndex].scramble;
+          navigator.clipboard.writeText(text).then(() => {
+            el.copyIconDefault.hidden = true;
+            el.copyIconCheck.hidden = false;
+            el.copyButton.classList.add("copied");
+            clearTimeout(copyTimeout);
+            copyTimeout = setTimeout(() => {
+              el.copyIconDefault.hidden = false;
+              el.copyIconCheck.hidden = true;
+              el.copyButton.classList.remove("copied");
+            }, 1500);
+          });
+        }
+
+        // ---- render ----
+
+        function clearState() {
+          el.countBadge.textContent = data.length === 1 ? "1 problem" : `${data.length} problems`;
+          el.statusBadge.textContent = "No problem";
+          el.scrambleBox.textContent = 'Press "Random" to get a scramble.';
+          el.scrambleBox.classList.add("empty");
+          el.copyButton.hidden = true;
+          el.toggleAnswerButton.disabled = true;
+          el.toggleAnswerButton.textContent = "Show Answer";
+          el.answerSection.hidden = true;
+          el.answerMeta.textContent = "";
+          el.solutionList.replaceChildren();
+          el.jumpInput.value = "";
+        }
+
+        function renderSolutions(solutions) {
+          el.solutionList.replaceChildren();
+          const sorted = sortSolutions(solutions);
+
+          sorted.forEach((sol, i) => {
+            const li = document.createElement("li");
+            li.className = "solution-item";
+
+            const top = document.createElement("div");
+            top.className = "solution-top";
+            const idx = document.createElement("div");
+            idx.className = "solution-index";
+            idx.textContent = `Solution ${i + 1}`;
+            top.appendChild(idx);
+
+            const moves = document.createElement("div");
+            moves.className = "solution-moves";
+            moves.textContent = sol.moves;
+
+            const links = document.createElement("div");
+            links.className = "solution-links";
+            const a = document.createElement("a");
+            a.className = "link-button";
+            a.href = sol.url;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = "alg.cubing.net";
+            links.appendChild(a);
+
+            li.appendChild(top);
+            li.appendChild(moves);
+            li.appendChild(links);
+            el.solutionList.appendChild(li);
+          });
+        }
+
+        function renderProblem() {
+          el.countBadge.textContent = data.length === 1 ? "1 problem" : `${data.length} problems`;
+
+          if (state.currentIndex < 0 || state.currentIndex >= data.length) {
+            clearState();
+            return;
+          }
+
+          const current = data[state.currentIndex];
+          const display = state.currentIndex + 1;
+
+          el.statusBadge.textContent = `#${display} / ${data.length}`;
+          el.scrambleBox.textContent = current.scramble;
+          el.scrambleBox.classList.remove("empty");
+          el.copyButton.hidden = false;
+
+          el.toggleAnswerButton.disabled = false;
+          el.toggleAnswerButton.textContent = state.answerVisible ? "Hide Answer" : "Show Answer";
+
+          el.answerMeta.textContent =
+            current.solutions.length === 1 ? "1 solution" : `${current.solutions.length} solutions`;
+
+          renderSolutions(current.solutions);
+          el.answerSection.hidden = !state.answerVisible;
+
+          el.jumpInput.value = display;
+        }
+
+        // ---- actions ----
+
+        function drawRandom() {
+          if (data.length === 0) {
+            clearState();
+            return;
+          }
+          state.currentIndex = pickRandomIndex();
+          state.answerVisible = false;
+          renderProblem();
+        }
+
+        function toggleAnswer() {
+          if (state.currentIndex < 0) return;
+          state.answerVisible = !state.answerVisible;
+          renderProblem();
+        }
+
+        function jumpTo(num) {
+          const n = parseInt(num, 10);
+          if (isNaN(n) || n < 1 || n > data.length) return;
+          state.currentIndex = n - 1;
+          state.answerVisible = false;
+          renderProblem();
+        }
+
+        // ---- events ----
+
+        el.drawButton.addEventListener("click", drawRandom);
+        el.toggleAnswerButton.addEventListener("click", toggleAnswer);
+        el.copyButton.addEventListener("click", copyScramble);
+
+        el.jumpInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            jumpTo(el.jumpInput.value);
+            el.jumpInput.blur();
+          }
+        });
+
+        el.jumpInput.addEventListener("change", () => {
+          jumpTo(el.jumpInput.value);
+        });
+
+        el.jumpInput.max = data.length;
+
+        // ---- keyboard shortcuts ----
+        document.addEventListener("keydown", (e) => {
+          // Ignore shortcuts while typing in an input field
+          if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") return;
+
+          if (e.code === "Space") {
+            e.preventDefault();
+            toggleAnswer();
+          } else if (e.code === "Enter") {
+            e.preventDefault();
+            drawRandom();
+          }
+        });
+
+        // ---- init ----
+        clearState();
+      })();
+    </script>
+  </body>
+</html>

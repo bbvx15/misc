@@ -72,6 +72,10 @@
         padding: 0;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         font-family: var(--sans);
         background: radial-gradient(circle at top, rgba(37, 99, 235, 0.12), transparent 35%), var(--bg);
@@ -351,6 +355,50 @@
         font-size: 0.92rem;
       }
 
+      .category-jump {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--panel-2);
+      }
+
+      .category-jump-label {
+        color: var(--muted);
+        font-size: 0.86rem;
+        font-weight: 700;
+        margin-right: 2px;
+      }
+
+      .category-jump-button {
+        min-height: 34px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
+      .category-jump-button:hover {
+        background: var(--subtle-button-hover);
+      }
+
+      .category-jump-button.best {
+        border-color: color-mix(in srgb, var(--best), var(--border) 25%);
+        background: var(--best-bg);
+        color: var(--best);
+      }
+
+      .category-jump-button.not-found {
+        opacity: 0.55;
+      }
+
       .category-list {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -358,6 +406,7 @@
       }
 
       .category-card {
+        scroll-margin-top: 16px;
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
         background: var(--panel-2);
@@ -432,7 +481,7 @@
         font-weight: 800;
       }
 
-      .not-found {
+      .not-found-message {
         color: var(--muted);
         font-size: 0.92rem;
         padding: 8px 0 2px;
@@ -499,6 +548,37 @@
         min-height: 34px;
         padding: 7px 10px;
         font-size: 0.86rem;
+      }
+
+      .category-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      .category-fold-info {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .show-more-button {
+        min-height: 34px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
+      .show-more-button:hover {
+        background: var(--subtle-button-hover);
       }
 
       .history-section {
@@ -614,6 +694,14 @@
           width: 100%;
         }
 
+        .category-jump-button {
+          width: auto;
+        }
+
+        .show-more-button {
+          width: 100%;
+        }
+
         .scramble-box {
           min-height: 140px;
         }
@@ -690,6 +778,7 @@
             <div id="answerMeta" class="answer-meta"></div>
           </div>
 
+          <div id="categoryJump" class="category-jump" hidden></div>
           <div id="categoryList" class="category-list"></div>
         </section>
 
@@ -349354,6 +349443,7 @@
 
       (() => {
         const HISTORY_LIMIT = 100;
+        const DEFAULT_VISIBLE_SOLUTIONS = 3;
 
         const data = normalizeData(scrambleData);
 
@@ -349362,6 +349452,7 @@
           answerVisible: false,
           history: [],
           historyCursor: -1,
+          expandedCategories: new Set(),
         };
 
         const el = {
@@ -349378,6 +349469,7 @@
           historyForwardButton: document.getElementById("historyForwardButton"),
           answerSection: document.getElementById("answerSection"),
           answerMeta: document.getElementById("answerMeta"),
+          categoryJump: document.getElementById("categoryJump"),
           categoryList: document.getElementById("categoryList"),
           historySection: document.getElementById("historySection"),
           historyMeta: document.getElementById("historyMeta"),
@@ -349604,6 +349696,7 @@
           showProblem(state.history[state.historyCursor], {
             addHistory: false,
             revealAnswer: false,
+            resetExpanded: true,
             updateUrl: true,
           });
         }
@@ -349615,6 +349708,7 @@
           showProblem(state.history[state.historyCursor], {
             addHistory: false,
             revealAnswer: false,
+            resetExpanded: true,
             updateUrl: true,
           });
         }
@@ -349626,6 +349720,7 @@
           showProblem(state.history[state.historyCursor], {
             addHistory: false,
             revealAnswer: false,
+            resetExpanded: true,
             updateUrl: true,
           });
         }
@@ -349657,6 +349752,7 @@
           showProblem(index, {
             addHistory: true,
             revealAnswer: false,
+            resetExpanded: true,
             updateUrl: true,
           });
         }
@@ -349679,6 +349775,7 @@
           showProblem(id - 1, {
             addHistory: true,
             revealAnswer: false,
+            resetExpanded: true,
             updateUrl: true,
           });
         }
@@ -349686,6 +349783,7 @@
         function showProblem(index, options = {}) {
           const addHistory = options.addHistory ?? true;
           const revealAnswer = options.revealAnswer ?? false;
+          const resetExpanded = options.resetExpanded ?? true;
           const updateUrl = options.updateUrl ?? true;
 
           if (index < 0 || index >= data.length) {
@@ -349695,6 +349793,10 @@
 
           state.currentIndex = index;
           state.answerVisible = Boolean(revealAnswer);
+
+          if (resetExpanded) {
+            state.expandedCategories = new Set();
+          }
 
           if (addHistory) {
             pushHistory(index);
@@ -349710,7 +349812,18 @@
         function clearProblem() {
           state.currentIndex = -1;
           state.answerVisible = false;
+          state.expandedCategories = new Set();
           updateUrlProblemIndex(-1);
+          render();
+        }
+
+        function toggleCategoryExpanded(categoryKey) {
+          if (state.expandedCategories.has(categoryKey)) {
+            state.expandedCategories.delete(categoryKey);
+          } else {
+            state.expandedCategories.add(categoryKey);
+          }
+
           render();
         }
 
@@ -349827,6 +349940,8 @@
           el.toggleAnswerButton.textContent = "Show Answer";
           el.answerSection.hidden = true;
           el.answerMeta.textContent = "";
+          el.categoryJump.replaceChildren();
+          el.categoryJump.hidden = true;
           el.categoryList.replaceChildren();
           el.jumpInput.value = "";
         }
@@ -349848,22 +349963,81 @@
 
         function renderCategories(categories) {
           el.categoryList.replaceChildren();
+          renderCategoryJump(categories);
 
           if (!Array.isArray(categories) || categories.length === 0) {
             const empty = document.createElement("div");
-            empty.className = "not-found";
+            empty.className = "not-found-message";
             empty.textContent = "No solution data.";
             el.categoryList.appendChild(empty);
             return;
           }
 
-          categories.forEach((category) => {
-            el.categoryList.appendChild(renderCategory(category));
+          categories.forEach((category, categoryIndex) => {
+            el.categoryList.appendChild(renderCategory(category, categoryIndex));
           });
         }
 
-        function renderCategory(category) {
+        function renderCategoryJump(categories) {
+          el.categoryJump.replaceChildren();
+
+          if (!Array.isArray(categories) || categories.length === 0) {
+            el.categoryJump.hidden = true;
+            return;
+          }
+
+          el.categoryJump.hidden = false;
+
+          const label = document.createElement("span");
+          label.className = "category-jump-label";
+          label.textContent = "Jump:";
+          el.categoryJump.appendChild(label);
+
+          categories.forEach((category, categoryIndex) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "category-jump-button";
+            button.textContent = categoryJumpLabel(category);
+
+            if (category.isBestXCross) {
+              button.classList.add("best");
+            }
+
+            if (!category.found) {
+              button.classList.add("not-found");
+            }
+
+            button.addEventListener("click", () => {
+              const target = document.getElementById(categoryDomId(categoryIndex));
+              if (target) {
+                target.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            });
+
+            el.categoryJump.appendChild(button);
+          });
+        }
+
+        function categoryJumpLabel(category) {
+          if (!category.found) {
+            return `${category.label} —`;
+          }
+
+          return `${category.label} d${category.depth}`;
+        }
+
+        function renderCategory(category, categoryIndex) {
+          const categoryKey = categoryIdentity(category, categoryIndex);
+          const sorted = sortedSolutions(category.solutions);
+          const expanded = state.expandedCategories.has(categoryKey);
+          const shouldFold = sorted.length > DEFAULT_VISIBLE_SOLUTIONS;
+          const visibleSolutions = shouldFold && !expanded ? sorted.slice(0, DEFAULT_VISIBLE_SOLUTIONS) : sorted;
+
           const card = document.createElement("article");
+          card.id = categoryDomId(categoryIndex);
           card.className = "category-card";
 
           if (category.isBestXCross) {
@@ -349904,7 +350078,7 @@
 
           if (!category.found || category.solutions.length === 0) {
             const notFound = document.createElement("div");
-            notFound.className = "not-found";
+            notFound.className = "not-found-message";
             notFound.textContent =
               category.maxDepth == null ? "No solution found." : `No solution found up to depth ${category.maxDepth}.`;
             card.appendChild(notFound);
@@ -349914,15 +350088,44 @@
           const list = document.createElement("ul");
           list.className = "solution-list";
 
-          sortedSolutions(category.solutions).forEach((solution, index) => {
-            list.appendChild(renderSolution(solution, index, category));
+          visibleSolutions.forEach((solution, index) => {
+            list.appendChild(renderSolution(solution, index));
           });
 
           card.appendChild(list);
+
+          if (shouldFold) {
+            card.appendChild(renderCategoryFooter(categoryKey, sorted.length, visibleSolutions.length, expanded));
+          }
+
           return card;
         }
 
-        function renderSolution(solution, index, category) {
+        function renderCategoryFooter(categoryKey, totalCount, visibleCount, expanded) {
+          const footer = document.createElement("div");
+          footer.className = "category-footer";
+
+          const info = document.createElement("div");
+          info.className = "category-fold-info";
+          info.textContent = expanded
+            ? `Showing all ${totalCount} solutions`
+            : `Showing ${visibleCount} of ${totalCount} solutions`;
+
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "show-more-button";
+          button.textContent = expanded ? `Show first ${DEFAULT_VISIBLE_SOLUTIONS}` : `Show all ${totalCount}`;
+          button.addEventListener("click", () => {
+            toggleCategoryExpanded(categoryKey);
+          });
+
+          footer.appendChild(info);
+          footer.appendChild(button);
+
+          return footer;
+        }
+
+        function renderSolution(solution, index) {
           const li = document.createElement("li");
           li.className = "solution-item";
 
@@ -350031,6 +350234,14 @@
           return count === 1 ? "1 solution" : `${count} solutions`;
         }
 
+        function categoryDomId(categoryIndex) {
+          return `category-${categoryIndex}`;
+        }
+
+        function categoryIdentity(category, categoryIndex) {
+          return `${categoryIndex}:${category.key || category.label || "category"}`;
+        }
+
         // -------------------------------------------------------------------
         // Events
         // -------------------------------------------------------------------
@@ -350091,6 +350302,7 @@
             showProblem(index, {
               addHistory: true,
               revealAnswer: false,
+              resetExpanded: true,
               updateUrl: false,
             });
           }
@@ -350106,6 +350318,7 @@
           showProblem(initialIndex, {
             addHistory: true,
             revealAnswer: false,
+            resetExpanded: true,
             updateUrl: true,
           });
         } else {
